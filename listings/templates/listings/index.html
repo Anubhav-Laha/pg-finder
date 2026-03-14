@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NestIn — Find Your Perfect PG & Hostel</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --saffron: #FF6B2B;
+    --saffron-light: #FF8C55;
+    --saffron-pale: #FFF0E8;
+    --ink: #1A1209;
+    --ink-mid: #3D2B1A;
+    --sand: #F5EFE6;
+    --sand-dark: #E8DDD0;
+    --white: #FDFAF7;
+    --teal: #0A7E6E;
+    --muted: #8A7060;
+    --card-shadow: 0 4px 24px rgba(26,18,9,0.10);
+    --card-hover: 0 12px 40px rgba(26,18,9,0.18);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--ink); overflow-x: hidden; }
+
+  /* NAVBAR */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: rgba(253,250,247,0.96); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(26,18,9,0.07); }
+  .logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 900; color: var(--ink); }
+  .logo span { color: var(--saffron); }
+  .nav-links { display: flex; align-items: center; gap: 20px; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--ink-mid); font-size: 0.88rem; font-weight: 500; }
+  .nav-cta { background: var(--saffron) !important; color: var(--white) !important; padding: 8px 18px; border-radius: 100px; font-weight: 600 !important; }
+  .nav-menu-btn { display: none; background: none; border: none; font-size: 1.4rem; cursor: pointer; }
+
+  /* HERO */
+  .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 100px 20px 60px; background: var(--sand); text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -100px; right: -100px; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(255,107,43,0.12) 0%, transparent 70%); pointer-events: none; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--saffron-pale); border: 1px solid rgba(255,107,43,0.2); color: var(--saffron); font-size: 0.78rem; font-weight: 600; padding: 6px 14px; border-radius: 100px; margin-bottom: 20px; text-transform: uppercase; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 8vw, 4rem); font-weight: 900; line-height: 1.1; color: var(--ink); margin-bottom: 16px; }
+  .hero h1 em { font-style: normal; color: var(--saffron); }
+  .hero p { font-size: 1rem; color: var(--muted); line-height: 1.7; max-width: 480px; margin: 0 auto 32px; }
+  .search-box { background: var(--white); border-radius: 16px; padding: 6px; box-shadow: var(--card-shadow); display: flex; align-items: center; gap: 6px; width: 100%; max-width: 540px; border: 1px solid var(--sand-dark); }
+  .search-box select { border: none; outline: none; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; color: var(--muted); padding: 10px 8px; border-right: 1px solid var(--sand-dark); cursor: pointer; font-weight: 500; min-width: 90px; }
+  .search-box input { border: none; outline: none; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; color: var(--ink); padding: 10px 10px; flex: 1; min-width: 0; }
+  .search-btn { background: var(--saffron); color: white; border: none; border-radius: 12px; padding: 10px 18px; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.88rem; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+  .hero-stats { display: flex; gap: 24px; margin-top: 28px; justify-content: center; flex-wrap: wrap; }
+  .stat { display: flex; flex-direction: column; align-items: center; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--ink); }
+  .stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+  /* FILTERS */
+  .filters-section { padding: 40px 20px 16px; background: var(--white); }
+  .section-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: var(--saffron); margin-bottom: 8px; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: var(--ink); margin-bottom: 20px; }
+  .filter-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+  .filter-tab { padding: 8px 16px; border-radius: 100px; border: 1.5px solid var(--sand-dark); background: transparent; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .filter-tab:hover, .filter-tab.active { background: var(--saffron); border-color: var(--saffron); color: white; }
+
+  /* LISTINGS */
+  .listings-section { padding: 8px 20px 60px; background: var(--white); }
+  .listings-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+  .listing-card { background: var(--white); border-radius: 20px; overflow: hidden; border: 1px solid var(--sand-dark); box-shadow: var(--card-shadow); cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; }
+  .listing-card:hover { transform: translateY(-6px); box-shadow: var(--card-hover); }
+  .listing-img { width: 100%; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; font-size: 3.5rem; position: relative; overflow: hidden; }
+  .listing-img img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+  .bg-1 { background: linear-gradient(135deg, #FFE8D6 0%, #FFCBA0 100%); }
+  .bg-2 { background: linear-gradient(135deg, #D6EFF8 0%, #A0D8EF 100%); }
+  .bg-3 { background: linear-gradient(135deg, #D6F8E8 0%, #A0EFC0 100%); }
+  .bg-4 { background: linear-gradient(135deg, #F8D6F0 0%, #EFA0D8 100%); }
+  .bg-5 { background: linear-gradient(135deg, #F8F0D6 0%, #EFD8A0 100%); }
+  .bg-6 { background: linear-gradient(135deg, #D6D6F8 0%, #A0A0EF 100%); }
+  .listing-tag { position: absolute; top: 12px; left: 12px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; z-index: 1; }
+  .tag-available { background: rgba(10,126,110,0.15); color: var(--teal); }
+  .tag-full { background: rgba(26,18,9,0.12); color: var(--ink-mid); }
+  .tag-verified { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.95); font-size: 0.68rem; font-weight: 700; color: var(--teal); padding: 4px 10px; border-radius: 100px; z-index: 1; }
+  .wishlist-btn { position: absolute; bottom: 12px; right: 12px; width: 32px; height: 32px; background: rgba(255,255,255,0.95); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; cursor: pointer; border: none; z-index: 1; }
+  .listing-body { padding: 16px; }
+  .listing-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
+  .listing-title { font-size: 0.95rem; font-weight: 600; color: var(--ink); line-height: 1.3; flex: 1; margin-right: 8px; }
+  .listing-type { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; background: var(--saffron-pale); color: var(--saffron); padding: 3px 8px; border-radius: 100px; white-space: nowrap; }
+  .listing-location { font-size: 0.8rem; color: var(--muted); margin-bottom: 10px; }
+  .listing-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 12px; }
+  .listing-tag-pill { font-size: 0.68rem; background: var(--sand); color: var(--ink-mid); padding: 3px 8px; border-radius: 100px; font-weight: 500; }
+  .listing-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid var(--sand-dark); }
+  .price-amount { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--saffron); }
+  .price-label { font-size: 0.68rem; color: var(--muted); }
+  .contact-btn { background: var(--ink); color: white; border: none; border-radius: 100px; padding: 8px 16px; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+  .contact-btn:hover { background: var(--saffron); }
+  .no-listings { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 1rem; }
+
+  /* HOW IT WORKS */
+  .how-section { padding: 60px 20px; background: var(--sand); }
+  .steps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 32px; }
+  .step-card { text-align: center; padding: 28px 20px; background: var(--white); border-radius: 20px; border: 1px solid var(--sand-dark); position: relative; }
+  .step-num { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--saffron); color: white; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; }
+  .step-icon { font-size: 2.2rem; margin-bottom: 12px; }
+  .step-title { font-weight: 700; font-size: 0.92rem; color: var(--ink); margin-bottom: 8px; }
+  .step-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+
+  /* CTA */
+  .cta-section { margin: 0 20px 60px; background: var(--ink); border-radius: 24px; padding: 40px 28px; text-align: center; }
+  .cta-section h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: white; margin-bottom: 12px; }
+  .cta-section p { font-size: 0.92rem; color: rgba(255,255,255,0.6); line-height: 1.6; margin-bottom: 24px; }
+  .cta-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary { background: var(--saffron); color: white; border: none; padding: 12px 24px; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.92rem; cursor: pointer; }
+  .btn-outline { background: transparent; color: white; border: 1.5px solid rgba(255,255,255,0.3); padding: 12px 24px; border-radius: 100px; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.92rem; cursor: pointer; }
+
+  /* FOOTER */
+  footer { background: var(--ink); color: rgba(255,255,255,0.7); padding: 40px 20px 24px; }
+  .footer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 32px; margin-bottom: 32px; }
+  .footer-brand p { font-size: 0.82rem; line-height: 1.7; margin-top: 10px; }
+  .footer-col h5 { font-size: 0.82rem; font-weight: 700; color: white; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 1px; }
+  .footer-col a { display: block; color: rgba(255,255,255,0.55); text-decoration: none; font-size: 0.82rem; margin-bottom: 8px; }
+  .footer-col a:hover { color: var(--saffron); }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; text-align: center; font-size: 0.78rem; }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; z-index: 200; background: rgba(26,18,9,0.6); backdrop-filter: blur(6px); align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: var(--white); border-radius: 24px; padding: 32px 24px; width: 100%; max-width: 440px; position: relative; max-height: 90vh; overflow-y: auto; }
+  .modal-close { position: absolute; top: 16px; right: 16px; background: var(--sand); border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .modal h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+  .modal-subtitle { font-size: 0.84rem; color: var(--muted); margin-bottom: 20px; }
+  .modal-form { display: flex; flex-direction: column; gap: 12px; }
+  .modal-form input, .modal-form textarea { border: 1.5px solid var(--sand-dark); border-radius: 12px; padding: 12px 14px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; color: var(--ink); outline: none; background: var(--white); width: 100%; }
+  .modal-form input:focus, .modal-form textarea:focus { border-color: var(--saffron); }
+  .modal-form textarea { resize: none; height: 80px; }
+  .modal-submit { background: var(--saffron); color: white; border: none; border-radius: 12px; padding: 13px; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.92rem; cursor: pointer; margin-top: 4px; width: 100%; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--teal); color: white; font-weight: 600; font-size: 0.85rem; padding: 12px 20px; border-radius: 12px; z-index: 300; opacity: 0; transition: all 0.4s; white-space: nowrap; }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  /* MOBILE NAV */
+  .mobile-nav { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: var(--white); z-index: 150; flex-direction: column; align-items: center; justify-content: center; gap: 28px; }
+  .mobile-nav.active { display: flex; }
+  .mobile-nav a { font-size: 1.2rem; font-weight: 600; color: var(--ink); text-decoration: none; }
+  .mobile-nav-close { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 1.6rem; cursor: pointer; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    .nav-menu-btn { display: block; }
+    .listings-grid { grid-template-columns: 1fr; }
+    .steps-grid { grid-template-columns: 1fr 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="logo">Nest<span>In</span></div>
+  <ul class="nav-links">
+    <li><a href="#listings">Find PG</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#" onclick="openModal('list')">List Your PG</a></li>
+    <li><a href="#" class="nav-cta" onclick="openModal('signin')">Sign In</a></li>
+  </ul>
+  <button class="nav-menu-btn" onclick="toggleMobileNav()">☰</button>
+</nav>
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-close" onclick="toggleMobileNav()">✕</button>
+  <a href="#listings" onclick="toggleMobileNav()">Find PG</a>
+  <a href="#how" onclick="toggleMobileNav()">How It Works</a>
+  <a href="#" onclick="openModal('list'); toggleMobileNav()">List Your PG</a>
+  <a href="#" class="nav-cta" onclick="openModal('signin'); toggleMobileNav()">Sign In</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">✦ Kharghar & Navi Mumbai's PG Finder</div>
+  <h1>Find Your <em>Perfect</em><br>Home in<br>Navi Mumbai</h1>
+  <p>Browse verified PGs and hostels in Kharghar, Navi Mumbai. No brokerage, no fake listings — just real homes.</p>
+  <div class="search-box">
+    <select id="typeFilter">
+      <option value="">All Types</option>
+      <option value="pg">PG</option>
+      <option value="hostel">Hostel</option>
+      <option value="coliving">Co-Living</option>
+    </select>
+    <input type="text" placeholder="Search locality, sector..." id="searchInput" />
+    <button class="search-btn" onclick="handleSearch()">🔍 Search</button>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num" id="totalListings">0</span><span class="stat-label">Verified Listings</span></div>
+    <div class="stat"><span class="stat-num">100%</span><span class="stat-label">No Brokerage</span></div>
+    <div class="stat"><span class="stat-num">24hr</span><span class="stat-label">Response Time</span></div>
+  </div>
+</section>
+
+<!-- FILTERS & LISTINGS -->
+<section class="filters-section" id="listings">
+  <div class="section-label">Browse Listings</div>
+  <div class="section-title">PGs in Navi Mumbai</div>
+  <div class="filter-tabs">
+    <button class="filter-tab active" onclick="filterListings('all', this)">All</button>
+    <button class="filter-tab" onclick="filterListings('ladies', this)">👩 Ladies Only</button>
+    <button class="filter-tab" onclick="filterListings('gents', this)">👨 Gents Only</button>
+    <button class="filter-tab" onclick="filterListings('any', this)">🤝 Any Gender</button>
+    <button class="filter-tab" onclick="filterListings('pg', this)">🏠 PG</button>
+    <button class="filter-tab" onclick="filterListings('hostel', this)">🏨 Hostel</button>
+    <button class="filter-tab" onclick="filterListings('coliving', this)">🌟 Co-Living</button>
+  </div>
+</section>
+
+<section class="listings-section">
+  <div class="listings-grid" id="listingsGrid">
+    {% for listing in listings %}
+    <div class="listing-card" data-gender="{{ listing.gender }}" data-type="{{ listing.pg_type }}" onclick="window.location.href='/listing/{{ listing.pk }}/'">
+      <div class="listing-img bg-{{ forloop.counter|divisibleby:6|yesno:'6,' }}{% cycle 'bg-1' 'bg-2' 'bg-3' 'bg-4' 'bg-5' 'bg-6' %}">
+        {% if listing.photo %}
+        <img src="{{ listing.photo.url }}" alt="{{ listing.title }}" />
+        {% else %}
+        <span>🏠</span>
+        {% endif %}
+        <div class="listing-tag {% if listing.is_available %}tag-available{% else %}tag-full{% endif %}">
+          {% if listing.is_available %}✓ Available{% else %}✗ Full{% endif %}
+        </div>
+        {% if listing.is_verified %}
+        <div class="tag-verified">✅ Verified</div>
+        {% endif %}
+        <button class="wishlist-btn" onclick="toggleWishlist(this)">🤍</button>
+      </div>
+      <div class="listing-body">
+        <div class="listing-header">
+          <div class="listing-title">{{ listing.title }}</div>
+          <div class="listing-type">{{ listing.get_pg_type_display }}</div>
+        </div>
+        <div class="listing-location">📍 {{ listing.location }}, {{ listing.city }}</div>
+        <div class="listing-tags">
+          <span class="listing-tag-pill">{{ listing.get_gender_display }}</span>
+          <span class="listing-tag-pill">{{ listing.get_food_display }}</span>
+          {% if listing.has_single %}<span class="listing-tag-pill">Single</span>{% endif %}
+          {% if listing.has_double %}<span class="listing-tag-pill">Double</span>{% endif %}
+          {% if listing.has_triple %}<span class="listing-tag-pill">Triple</span>{% endif %}
+          {% if listing.has_dormitory %}<span class="listing-tag-pill">Dorm</span>{% endif %}
+          {% if listing.distance_from_metro %}<span class="listing-tag-pill">🚇 {{ listing.distance_from_metro }}</span>{% endif %}
+        </div>
+        <div class="listing-footer">
+          <div class="listing-price">
+            <span class="price-amount">
+              ₹{{ listing.min_price }}{% if listing.max_price %} - ₹{{ listing.max_price }}{% endif %}
+            </span>
+            <span class="price-label">per month</span>
+          </div>
+          <button class="contact-btn" onclick="openContactModal('{{ listing.title }}', '{{ listing.owner_phone }}')">Contact</button>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="no-listings">🏠 No listings yet! Check back soon.</div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="section-label">Simple Process</div>
+  <div class="section-title">Find a PG in 4 Steps</div>
+  <div class="steps-grid">
+    <div class="step-card"><div class="step-num">1</div><div class="step-icon">🔍</div><div class="step-title">Search</div><div class="step-desc">Enter your locality and preferences.</div></div>
+    <div class="step-card"><div class="step-num">2</div><div class="step-icon">📋</div><div class="step-title">Compare</div><div class="step-desc">Browse verified listings with real details.</div></div>
+    <div class="step-card"><div class="step-num">3</div><div class="step-icon">📞</div><div class="step-title">Contact</div><div class="step-desc">Call the owner directly — no middleman!</div></div>
+    <div class="step-card"><div class="step-num">4</div><div class="step-icon">🏠</div><div class="step-title">Move In</div><div class="step-desc">Visit and move into your new home!</div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>Own a PG in Navi Mumbai?<br>List it for Free!</h2>
+  <p>Get genuine inquiries from verified tenants. Join NestIn today — it's completely free!</p>
+  <div class="cta-buttons">
+    <button class="btn-primary" onclick="openModal('list')">List Your Property</button>
+    <button class="btn-outline" onclick="openModal('signin')">Sign In</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">Nest<span>In</span></div>
+      <p>Navi Mumbai's most trusted PG finder. No brokerage, no fake listings.</p>
+    </div>
+    <div class="footer-col">
+      <h5>For Tenants</h5>
+      <a href="#">Find a PG</a>
+      <a href="#">Find a Hostel</a>
+      <a href="#">Co-Living</a>
+    </div>
+    <div class="footer-col">
+      <h5>For Owners</h5>
+      <a href="#" onclick="openModal('list')">List Your PG</a>
+      <a href="#">Contact Us</a>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2025 NestIn · Navi Mumbai · Made with ❤️ for <span style="color:var(--saffron)">Bharat</span></div>
+</footer>
+
+<!-- CONTACT MODAL -->
+<div class="modal-overlay" id="contactModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('contactModal')">✕</button>
+    <h3>Contact Owner</h3>
+    <div class="modal-subtitle" id="modalPGName">Send an inquiry</div>
+    <div id="ownerPhone" style="margin-bottom:16px;display:none;">
+      <a id="phoneLink" href="" style="display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:white;padding:12px 20px;border-radius:100px;text-decoration:none;font-weight:600;font-size:0.92rem;">📞 Call Owner Directly</a>
+    </div>
+    <div class="modal-form">
+      <input type="text" placeholder="Your Full Name" />
+      <input type="tel" placeholder="Your Phone Number" />
+      <input type="email" placeholder="Your Email Address" />
+      <textarea placeholder="Message (optional)"></textarea>
+      <button class="modal-submit" onclick="submitInquiry()">📨 Send Inquiry</button>
+    </div>
+  </div>
+</div>
+
+<!-- LIST MODAL -->
+<div class="modal-overlay" id="listModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('listModal')">✕</button>
+    <h3>List Your Property</h3>
+    <div class="modal-subtitle">It's completely free to list!</div>
+    <div class="modal-form">
+      <input type="text" placeholder="Your Name" />
+      <input type="tel" placeholder="Phone Number" />
+      <input type="text" placeholder="Property Name" />
+      <input type="text" placeholder="Locality in Navi Mumbai" />
+      <button class="modal-submit" onclick="submitListing()">🏠 Submit</button>
+    </div>
+  </div>
+</div>
+
+<!-- SIGN IN MODAL -->
+<div class="modal-overlay" id="signinModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('signinModal')">✕</button>
+    <h3>Welcome Back</h3>
+    <div class="modal-subtitle">Sign in to save favourites</div>
+    <div class="modal-form">
+      <input type="email" placeholder="Email Address" />
+      <input type="password" placeholder="Password" />
+      <button class="modal-submit" onclick="submitSignin()">🔑 Sign In</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // Count listings
+  const cards = document.querySelectorAll('.listing-card');
+  document.getElementById('totalListings').textContent = cards.length + '+';
+
+  // Filter
+  function filterListings(type, btn) {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    cards.forEach(card => {
+      if (type === 'all') { card.style.display = 'block'; return; }
+      const gender = card.dataset.gender || '';
+      const pgtype = card.dataset.type || '';
+      card.style.display = (gender === type || pgtype === type) ? 'block' : 'none';
+    });
+  }
+
+  // Wishlist
+  function toggleWishlist(btn) {
+    const saved = btn.textContent === '❤️';
+    btn.textContent = saved ? '🤍' : '❤️';
+    showToast(saved ? 'Removed from wishlist' : '❤️ Saved to wishlist!');
+  }
+
+  // Modals
+  function openModal(type) {
+    if (type === 'list') document.getElementById('listModal').classList.add('active');
+    else if (type === 'signin') document.getElementById('signinModal').classList.add('active');
+  }
+
+  function openContactModal(name, phone) {
+    document.getElementById('modalPGName').textContent = 'Inquiry for: ' + name;
+    const phoneDiv = document.getElementById('ownerPhone');
+    const phoneLink = document.getElementById('phoneLink');
+    if (phone) {
+      phoneDiv.style.display = 'block';
+      phoneLink.href = 'tel:' + phone;
+    } else {
+      phoneDiv.style.display = 'none';
+    }
+    document.getElementById('contactModal').classList.add('active');
+  }
+
+  function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+  document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); }));
+
+  function submitInquiry() { closeModal('contactModal'); showToast('✅ Inquiry sent!'); }
+  function submitListing() { closeModal('listModal'); showToast('🎉 We will call you within 24 hours!'); }
+  function submitSignin() { closeModal('signinModal'); showToast('👋 Welcome back!'); }
+
+  // Search
+  function handleSearch() {
+    const q = document.getElementById('searchInput').value.trim().toLowerCase();
+    const type = document.getElementById('typeFilter').value;
+    cards.forEach(card => {
+      const title = card.querySelector('.listing-title').textContent.toLowerCase();
+      const location = card.querySelector('.listing-location').textContent.toLowerCase();
+      const pgtype = card.dataset.type || '';
+      const matchSearch = !q || title.includes(q) || location.includes(q);
+      const matchType = !type || pgtype === type;
+      card.style.display = (matchSearch && matchType) ? 'block' : 'none';
+    });
+    document.getElementById('listings').scrollIntoView({behavior:'smooth'});
+    showToast('🔍 Showing results for "' + (q || 'all') + '"');
+  }
+
+  // Mobile nav
+  function toggleMobileNav() {
+    document.getElementById('mobileNav').classList.toggle('active');
+  }
+
+  // Toast
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+  }
+
+  document.getElementById('searchInput').addEventListener('keypress', e => { if (e.key === 'Enter') handleSearch(); });
+</script>
+</body>
+</html>

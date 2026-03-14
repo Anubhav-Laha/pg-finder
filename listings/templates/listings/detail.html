@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ listing.title }} — NestIn</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --saffron: #FF6B2B;
+    --saffron-pale: #FFF0E8;
+    --ink: #1A1209;
+    --ink-mid: #3D2B1A;
+    --sand: #F5EFE6;
+    --sand-dark: #E8DDD0;
+    --white: #FDFAF7;
+    --teal: #0A7E6E;
+    --muted: #8A7060;
+    --card-shadow: 0 4px 24px rgba(26,18,9,0.10);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--sand); color: var(--ink); }
+
+  /* NAVBAR */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: rgba(253,250,247,0.96); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(26,18,9,0.07); }
+  .logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 900; color: var(--ink); text-decoration: none; }
+  .logo span { color: var(--saffron); }
+  .back-btn { display: flex; align-items: center; gap: 6px; color: var(--ink-mid); text-decoration: none; font-size: 0.88rem; font-weight: 500; background: var(--sand); padding: 8px 16px; border-radius: 100px; transition: all 0.2s; }
+  .back-btn:hover { background: var(--sand-dark); }
+
+  /* PAGE */
+  .page { max-width: 680px; margin: 0 auto; padding: 80px 20px 60px; }
+
+  /* PHOTO */
+  .listing-photo { width: 100%; aspect-ratio: 16/9; border-radius: 24px; overflow: hidden; margin-bottom: 24px; position: relative; box-shadow: var(--card-shadow); }
+  .listing-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .listing-photo .no-photo { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 5rem; }
+  .bg-warm { background: linear-gradient(135deg, #FFE8D6 0%, #FFCBA0 100%); }
+
+  /* BADGES */
+  .badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .badge { font-size: 0.72rem; font-weight: 700; padding: 5px 12px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .badge-available { background: rgba(10,126,110,0.12); color: var(--teal); }
+  .badge-full { background: rgba(26,18,9,0.08); color: var(--ink-mid); }
+  .badge-verified { background: var(--saffron-pale); color: var(--saffron); }
+  .badge-type { background: var(--sand-dark); color: var(--ink-mid); }
+
+  /* TITLE */
+  .listing-title { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 5vw, 2.2rem); font-weight: 900; color: var(--ink); margin-bottom: 8px; line-height: 1.2; }
+  .listing-location { font-size: 0.95rem; color: var(--muted); margin-bottom: 24px; display: flex; align-items: center; gap: 6px; }
+
+  /* PRICE CARD */
+  .price-card { background: var(--white); border-radius: 20px; padding: 20px 24px; margin-bottom: 20px; box-shadow: var(--card-shadow); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+  .price-main { display: flex; flex-direction: column; }
+  .price-amount { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 900; color: var(--saffron); }
+  .price-label { font-size: 0.78rem; color: var(--muted); }
+  .price-deposit { font-size: 0.82rem; color: var(--ink-mid); margin-top: 4px; }
+  .call-btn { display: flex; align-items: center; gap: 8px; background: var(--teal); color: white; padding: 14px 24px; border-radius: 100px; text-decoration: none; font-weight: 700; font-size: 0.95rem; transition: all 0.2s; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+  .call-btn:hover { background: #0a6d5e; transform: scale(1.02); }
+
+  /* INFO GRID */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+  .info-card { background: var(--white); border-radius: 16px; padding: 16px; box-shadow: var(--card-shadow); }
+  .info-icon { font-size: 1.4rem; margin-bottom: 6px; }
+  .info-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+  .info-value { font-size: 0.92rem; font-weight: 600; color: var(--ink); }
+
+  /* SECTIONS */
+  .section { background: var(--white); border-radius: 20px; padding: 20px 24px; margin-bottom: 16px; box-shadow: var(--card-shadow); }
+  .section-heading { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--saffron); margin-bottom: 14px; }
+
+  /* AMENITIES */
+  .amenities-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .amenity-pill { font-size: 0.82rem; background: var(--sand); color: var(--ink-mid); padding: 6px 14px; border-radius: 100px; font-weight: 500; }
+
+  /* ROOM TYPES */
+  .room-types { display: flex; flex-wrap: wrap; gap: 8px; }
+  .room-pill { font-size: 0.82rem; background: var(--saffron-pale); color: var(--saffron); padding: 6px 14px; border-radius: 100px; font-weight: 600; }
+
+  /* DESCRIPTION */
+  .description { font-size: 0.92rem; color: var(--ink-mid); line-height: 1.8; }
+
+  /* DISTANCE */
+  .distance-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--sand); }
+  .distance-row:last-child { border-bottom: none; }
+  .distance-icon { font-size: 1.2rem; }
+  .distance-text { font-size: 0.88rem; color: var(--ink-mid); }
+  .distance-value { font-size: 0.88rem; font-weight: 600; color: var(--ink); margin-left: auto; }
+
+  /* CONTACT BOTTOM */
+  .contact-bottom { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white); padding: 14px 20px; border-top: 1px solid var(--sand-dark); display: flex; gap: 12px; z-index: 50; box-shadow: 0 -4px 20px rgba(26,18,9,0.08); }
+  .contact-bottom .call-btn { flex: 1; justify-content: center; }
+  .whatsapp-btn { display: flex; align-items: center; gap: 8px; background: #25D366; color: white; padding: 14px 20px; border-radius: 100px; text-decoration: none; font-weight: 700; font-size: 0.92rem; flex: 1; justify-content: center; }
+
+  /* MOBILE */
+  @media (max-width: 480px) {
+    .info-grid { grid-template-columns: 1fr 1fr; }
+    .price-card { flex-direction: column; align-items: flex-start; }
+    .call-btn { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">Nest<span>In</span></a>
+  <a href="/" class="back-btn">← Back to listings</a>
+</nav>
+
+<div class="page">
+
+  <!-- PHOTO -->
+  <div class="listing-photo">
+    {% if listing.photo %}
+    <img src="{{ listing.photo.url }}" alt="{{ listing.title }}" />
+    {% else %}
+    <div class="no-photo bg-warm">🏠</div>
+    {% endif %}
+  </div>
+
+  <!-- BADGES -->
+  <div class="badges">
+    <span class="badge badge-type">{{ listing.get_pg_type_display }}</span>
+    {% if listing.is_available %}
+    <span class="badge badge-available">✓ Available</span>
+    {% else %}
+    <span class="badge badge-full">✗ Full</span>
+    {% endif %}
+    {% if listing.is_verified %}
+    <span class="badge badge-verified">✅ Verified</span>
+    {% endif %}
+    <span class="badge badge-type">{{ listing.get_gender_display }}</span>
+  </div>
+
+  <!-- TITLE -->
+  <div class="listing-title">{{ listing.title }}</div>
+  <div class="listing-location">📍 {{ listing.location }}, {{ listing.city }}</div>
+
+  <!-- PRICE CARD -->
+  <div class="price-card">
+    <div class="price-main">
+      <span class="price-amount">
+        ₹{{ listing.min_price }}{% if listing.max_price %} – ₹{{ listing.max_price }}{% endif %}
+      </span>
+      <span class="price-label">per month</span>
+      {% if listing.security_deposit %}
+      <span class="price-deposit">🔒 Deposit: {{ listing.security_deposit }}</span>
+      {% endif %}
+    </div>
+    {% if listing.owner_phone %}
+    <a href="tel:{{ listing.owner_phone }}" class="call-btn">📞 Call Owner</a>
+    {% endif %}
+  </div>
+
+  <!-- INFO GRID -->
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="info-icon">🍽️</div>
+      <div class="info-label">Food</div>
+      <div class="info-value">{{ listing.get_food_display }}</div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">📅</div>
+      <div class="info-label">Min Stay</div>
+      <div class="info-value">{{ listing.get_minimum_stay_display }}</div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">👤</div>
+      <div class="info-label">Gender</div>
+      <div class="info-value">{{ listing.get_gender_display }}</div>
+    </div>
+    <div class="info-card">
+      <div class="info-icon">🏠</div>
+      <div class="info-label">Type</div>
+      <div class="info-value">{{ listing.get_pg_type_display }}</div>
+    </div>
+  </div>
+
+  <!-- ROOM TYPES -->
+  {% if listing.has_single or listing.has_double or listing.has_triple or listing.has_dormitory %}
+  <div class="section">
+    <div class="section-heading">Room Types Available</div>
+    <div class="room-types">
+      {% if listing.has_single %}<span class="room-pill">🛏️ Single</span>{% endif %}
+      {% if listing.has_double %}<span class="room-pill">🛏️🛏️ Double</span>{% endif %}
+      {% if listing.has_triple %}<span class="room-pill">🛏️🛏️🛏️ Triple</span>{% endif %}
+      {% if listing.has_dormitory %}<span class="room-pill">🏨 Dormitory</span>{% endif %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- AMENITIES -->
+  {% if listing.amenities %}
+  <div class="section">
+    <div class="section-heading">Amenities</div>
+    <div class="amenities-list">
+      {% for amenity in listing.amenities.split %}
+      <span class="amenity-pill">{{ amenity }}</span>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- DISTANCE -->
+  {% if listing.distance_from_metro or listing.distance_from_college %}
+  <div class="section">
+    <div class="section-heading">Nearby</div>
+    {% if listing.distance_from_metro %}
+    <div class="distance-row">
+      <span class="distance-icon">🚇</span>
+      <span class="distance-text">Metro Station</span>
+      <span class="distance-value">{{ listing.distance_from_metro }}</span>
+    </div>
+    {% endif %}
+    {% if listing.distance_from_college %}
+    <div class="distance-row">
+      <span class="distance-icon">🎓</span>
+      <span class="distance-text">College</span>
+      <span class="distance-value">{{ listing.distance_from_college }}</span>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- DESCRIPTION -->
+  {% if listing.description %}
+  <div class="section">
+    <div class="section-heading">About this PG</div>
+    <div class="description">{{ listing.description }}</div>
+  </div>
+  {% endif %}
+
+  <!-- OWNER -->
+  {% if listing.owner_name %}
+  <div class="section">
+    <div class="section-heading">Owner Details</div>
+    <div class="info-value" style="font-size:1rem;">👤 {{ listing.owner_name }}</div>
+    {% if listing.owner_phone %}
+    <div style="color:var(--muted);font-size:0.88rem;margin-top:4px;">📞 {{ listing.owner_phone }}</div>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <!-- BOTTOM SPACING -->
+  <div style="height:80px;"></div>
+
+</div>
+
+<!-- STICKY BOTTOM CONTACT -->
+<div class="contact-bottom">
+  {% if listing.owner_phone %}
+  <a href="tel:{{ listing.owner_phone }}" class="call-btn">📞 Call Owner</a>
+  <a href="https://wa.me/91{{ listing.owner_phone }}" class="whatsapp-btn" target="_blank">💬 WhatsApp</a>
+  {% else %}
+  <button class="call-btn" onclick="alert('Owner contact not available yet!')">📞 Contact Owner</button>
+  {% endif %}
+</div>
+
+</body>
+</html>
